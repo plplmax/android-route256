@@ -2,6 +2,7 @@ package dev.ozon.gitlab.plplmax.homework2.data.products.repository
 
 import dev.ozon.gitlab.plplmax.homework2.data.products.ProductData
 
+// TODO: Fix variable visibility in the next homework
 internal val productsData = listOf(
     ProductData(
         guid = "b5f5852b-3b8c-4857-9f53-ac5c2b6a3b2f",
