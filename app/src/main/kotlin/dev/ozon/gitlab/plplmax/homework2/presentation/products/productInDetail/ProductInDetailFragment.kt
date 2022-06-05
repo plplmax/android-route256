@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import dev.ozon.gitlab.plplmax.homework2.R
 import dev.ozon.gitlab.plplmax.homework2.di.ServiceLocator
+import dev.ozon.gitlab.plplmax.homework2.presentation.core.load
 import dev.ozon.gitlab.plplmax.homework2.presentation.core.viewModelCreator
 
 class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
@@ -27,9 +28,7 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
         val ratingView: RatingBar = view.findViewById(R.id.ratingView)
 
         vm.product.observe(viewLifecycleOwner) {
-            Glide.with(productIV)
-                .load(it.image)
-                .into(productIV)
+            productIV.load(it.image)
 
             nameTV.text = it.name
             priceTV.text = it.price
