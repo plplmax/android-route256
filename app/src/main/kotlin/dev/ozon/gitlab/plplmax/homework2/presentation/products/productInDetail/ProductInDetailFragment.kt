@@ -36,6 +36,12 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
         }
 
         vm.getProductById(arguments?.getString(GUID_KEY)!!)
+
+        arguments?.let { bundle ->
+            bundle.getString(GUID_KEY)?.let {
+                vm.getProductById(it)
+            }
+        }
     }
 
     interface ToProductDetailNavigationListener {
