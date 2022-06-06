@@ -7,7 +7,6 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import dev.ozon.gitlab.plplmax.homework2.R
 import dev.ozon.gitlab.plplmax.homework2.di.ServiceLocator
 import dev.ozon.gitlab.plplmax.homework2.presentation.core.load
