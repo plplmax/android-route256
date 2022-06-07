@@ -46,7 +46,7 @@ dependencies {
     implementation lifecycle
     implementation liveData
     implementation glide.core
-    annotationProcessor glide.compiler
+    kapt glide.compiler
     testImplementation junit
     androidTestImplementation androidTestJunit
     androidTestImplementation espresso
