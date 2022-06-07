@@ -1,5 +1,6 @@
-package dev.ozon.gitlab.plplmax.homework2.data.products
+package dev.ozon.gitlab.plplmax.homework2.domain.products.mapper
 
+import dev.ozon.gitlab.plplmax.homework2.data.products.ProductData
 import dev.ozon.gitlab.plplmax.homework2.presentation.products.ProductUi
 
 fun ProductData.toUi(): ProductUi =
