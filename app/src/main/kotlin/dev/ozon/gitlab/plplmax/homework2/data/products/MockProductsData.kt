@@ -1,6 +1,4 @@
-package dev.ozon.gitlab.plplmax.homework2.data.products.repository
-
-import dev.ozon.gitlab.plplmax.homework2.data.products.ProductData
+package dev.ozon.gitlab.plplmax.homework2.data.products
 
 // TODO: Fix variable visibility in the next homework
 internal val productsData = listOf(
