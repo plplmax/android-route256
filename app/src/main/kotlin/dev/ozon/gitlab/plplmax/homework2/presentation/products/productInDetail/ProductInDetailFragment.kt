@@ -27,7 +27,9 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
         val ratingView: RatingBar = view.findViewById(R.id.ratingView)
 
         vm.product.observe(viewLifecycleOwner) {
-            productIV.load(it.image)
+            if (it.images.isNotEmpty()) {
+                productIV.load(it.images[0])
+            }
 
             nameTV.text = it.name
             priceTV.text = it.price
