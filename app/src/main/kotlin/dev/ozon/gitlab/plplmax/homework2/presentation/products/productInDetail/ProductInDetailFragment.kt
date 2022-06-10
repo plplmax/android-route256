@@ -36,8 +36,6 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
             ratingView.rating = it.rating.toFloat()
         }
 
-        vm.getProductById(arguments?.getString(GUID_KEY)!!)
-
         arguments?.let { bundle ->
             bundle.getString(GUID_KEY)?.let {
                 vm.getProductById(it)
