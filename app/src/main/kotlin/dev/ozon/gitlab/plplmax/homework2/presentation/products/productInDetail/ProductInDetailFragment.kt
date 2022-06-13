@@ -51,10 +51,6 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
         private const val GUID_KEY = "guid_key"
 
         @JvmStatic
-        fun newInstance(guid: String): ProductInDetailFragment {
-            return ProductInDetailFragment().apply {
-                arguments = bundleOf(GUID_KEY to guid)
-            }
-        }
+        fun newBundle(guid: String) = bundleOf(GUID_KEY to guid)
     }
 }
