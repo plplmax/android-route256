@@ -14,7 +14,8 @@ ext {
             espresso         : '3.4.0',
             navigation       : '2.4.1',
             lifecycle        : '2.3.1',
-            glide            : '4.13.0'
+            glide            : '4.13.0',
+            dagger           : '2.42'
     ]
 
     navigation = ['navigarion-fragment': "androidx.navigation:navigation-fragment-ktx:${versions.navigation}",
@@ -43,4 +44,6 @@ ext {
     glide = ['core'    : "com.github.bumptech.glide:glide:${versions.glide}",
              'compiler': "com.github.bumptech.glide:compiler:${versions.glide}"]
 
+    dagger = ['core'    : "com.google.dagger:dagger:${versions.dagger}",
+              'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}"]
 }

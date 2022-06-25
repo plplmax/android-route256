@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/productsFragment">
+
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="dev.ozon.gitlab.plplmax.feature_products_impl.presentation.ProductsFragment"
+        android:label="ProductsFragment"
+        tools:layout="@layout/fragment_products">
+        <action
+            android:id="@+id/action_productsFragment_to_productInDetailFragment"
+            app:destination="@id/productInDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productInDetailFragment"
+        android:name="dev.ozon.gitlab.plplmax.feature_product_detail_impl.presentation.ProductInDetailFragment"
+        android:label="ProductInDetailFragment"
+        tools:layout="@layout/pdp_fragment" />
+</navigation>

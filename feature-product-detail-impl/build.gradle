@@ -1,22 +1,19 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
 
-apply from: "dependencies.gradle"
+apply from: "../app/dependencies.gradle"
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
-        applicationId "dev.ozon.gitlab.plplmax.homework2"
-        minSdk 24
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        minSdk 21
+        targetSdk 32
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -36,6 +33,14 @@ android {
 
 dependencies {
 
+    implementation project(':core-utils')
     implementation project(':core-resources')
-    implementation project(':core-navigation-impl')
+    implementation project(':core-navigation-api')
+    implementation project(':core-network-api')
+    implementation project(':feature-product-detail-api')
+
+    implementation appCompat
+    implementation constraintLayout
+    implementation dagger.core
+    kapt dagger.compiler
 }
