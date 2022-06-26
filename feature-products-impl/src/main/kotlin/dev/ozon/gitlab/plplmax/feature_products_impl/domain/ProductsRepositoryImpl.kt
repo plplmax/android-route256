@@ -13,6 +13,7 @@ internal class ProductsRepositoryImpl @Inject constructor(
 ) : ProductsRepository {
     override fun getProducts(): List<ProductUi> {
         val productsInCache = localSource.getProducts()
+//        val productsInCache = emptyList<ProductData>()
 
         return with(productsInCache) {
             if (isEmpty()) remoteSource.getProducts().map(ProductData::toUi)

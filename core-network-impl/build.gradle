@@ -39,5 +39,6 @@ dependencies {
     implementation coreKtx
     implementation dagger.core
     kapt dagger.compiler
-    implementation gson
+    implementation retrofit.values()
+    implementation workManager
 }

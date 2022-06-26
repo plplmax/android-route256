@@ -21,7 +21,7 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     lateinit var navigator: Navigator
 
     private val vm: ProductsViewModel by viewModelCreator {
-        ProductsViewModel(interactor)
+        ProductsViewModel(requireActivity().applicationContext, viewLifecycleOwner, interactor)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

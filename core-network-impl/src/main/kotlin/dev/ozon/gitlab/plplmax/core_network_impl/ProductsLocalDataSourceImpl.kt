@@ -1,10 +1,8 @@
 package dev.ozon.gitlab.plplmax.core_network_impl
 
+import android.util.Log
 import com.google.gson.reflect.TypeToken
-import dev.ozon.gitlab.plplmax.core_network_api.ProductData
-import dev.ozon.gitlab.plplmax.core_network_api.ProductInDetailData
-import dev.ozon.gitlab.plplmax.core_network_api.ProductsLocalDataSource
-import dev.ozon.gitlab.plplmax.core_network_api.SharedPrefsProvider
+import dev.ozon.gitlab.plplmax.core_network_api.*
 import javax.inject.Inject
 
 class ProductsLocalDataSourceImpl @Inject constructor(
@@ -28,6 +26,7 @@ class ProductsLocalDataSourceImpl @Inject constructor(
     }
 
     override fun saveProducts(products: List<ProductData>) {
+        Log.e("TAG", "saveProducts: ${products}", )
         sharedPrefsProvider.saveObject(
             FILENAME_PRODUCTS,
             PRODUCT_LIST_KEY,
