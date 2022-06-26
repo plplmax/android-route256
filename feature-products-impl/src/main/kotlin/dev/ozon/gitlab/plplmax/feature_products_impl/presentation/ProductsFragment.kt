@@ -30,8 +30,9 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         (requireActivity() as DependenciesInjector).injectProductsFragment(this)
 
         with(view.findViewById<RecyclerView>(R.id.products_recycler)) {
-            adapter = ProductsAdapter {
-                navigator.openProductInDetailScreen(findNavController(), guid = it)
+            adapter = ProductsAdapter { guid ->
+                vm.saveProducts()
+                navigator.openProductInDetailScreen(findNavController(), guid)
             }
 
             vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)

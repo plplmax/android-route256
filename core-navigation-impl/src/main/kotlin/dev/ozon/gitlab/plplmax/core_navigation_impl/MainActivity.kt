@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity(), DependenciesInjector {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Dependencies.initAppComponent()
+        Dependencies.initAppComponent(applicationContext)
     }
 
     override fun injectProductsFragment(fragment: Fragment) {

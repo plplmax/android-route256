@@ -18,3 +18,19 @@ internal fun ProductInDetailData.toUi(): ProductInDetailUi =
         availableCount,
         additionalParams
     )
+
+internal fun ProductInDetailUi.toData(): ProductInDetailData =
+    ProductInDetailData(
+        guid,
+        name,
+        price,
+        description,
+        rating,
+        isFavorite,
+        isInCart,
+        images,
+        weight,
+        count,
+        availableCount,
+        additionalParams
+    )

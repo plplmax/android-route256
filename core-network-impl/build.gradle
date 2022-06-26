@@ -36,6 +36,8 @@ dependencies {
     implementation project(':core-utils')
     implementation project(':core-network-api')
 
+    implementation coreKtx
     implementation dagger.core
     kapt dagger.compiler
+    implementation gson
 }

@@ -64,8 +64,7 @@ class ProductsAdapter(
             }
 
             productViewContainer.setOnClickListener {
-                product.countViews++
-                notifyItemChanged(adapterPosition)
+                ++product.countViews
                 block(product.guid)
             }
         }

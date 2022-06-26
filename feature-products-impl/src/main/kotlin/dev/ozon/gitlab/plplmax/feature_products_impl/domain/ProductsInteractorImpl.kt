@@ -9,4 +9,8 @@ internal class ProductsInteractorImpl @Inject constructor(
     private val repository: ProductsRepository
 ) : ProductsInteractor {
     override fun getProducts(): List<ProductUi> = repository.getProducts()
+
+    override fun saveProducts(products: List<ProductUi>) {
+        repository.saveProducts(products)
+    }
 }

@@ -4,4 +4,5 @@ import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductIn
 
 interface ProductInDetailRepository {
     fun getProductById(guid: String): ProductInDetailUi?
+    fun saveProductById(product: ProductInDetailUi)
 }

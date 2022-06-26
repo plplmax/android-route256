@@ -15,7 +15,8 @@ ext {
             navigation       : '2.4.1',
             lifecycle        : '2.3.1',
             glide            : '4.13.0',
-            dagger           : '2.42'
+            dagger           : '2.42',
+            gson             : '2.9.0'
     ]
 
     navigation = ['navigarion-fragment': "androidx.navigation:navigation-fragment-ktx:${versions.navigation}",
@@ -46,4 +47,6 @@ ext {
 
     dagger = ['core'    : "com.google.dagger:dagger:${versions.dagger}",
               'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}"]
+    
+    gson = "com.google.code.gson:gson:${versions.gson}"
 }

@@ -14,4 +14,6 @@ class ProductsViewModel(private val interactor: ProductsInteractor) : ViewModel(
     init {
         _productLD.value = interactor.getProducts()
     }
+
+    fun saveProducts() = interactor.saveProducts(productLD.value!!)
 }

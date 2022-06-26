@@ -43,4 +43,5 @@ dependencies {
     implementation navigation.values()
     implementation dagger.core
     kapt dagger.compiler
+    implementation gson
 }

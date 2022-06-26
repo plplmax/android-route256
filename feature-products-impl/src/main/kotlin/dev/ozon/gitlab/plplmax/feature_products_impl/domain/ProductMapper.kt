@@ -11,5 +11,18 @@ internal fun ProductData.toUi(): ProductUi =
         price,
         rating,
         isFavorite,
-        isInCart
+        isInCart,
+        countViews
+    )
+
+internal fun ProductUi.toData(): ProductData =
+    ProductData(
+        guid,
+        image,
+        name,
+        price,
+        rating,
+        isFavorite,
+        isInCart,
+        countViews
     )
