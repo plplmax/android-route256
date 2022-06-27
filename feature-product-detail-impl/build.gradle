@@ -40,6 +40,7 @@ dependencies {
     implementation project(':feature-product-detail-api')
 
     implementation appCompat
+    implementation navigation.values()
     implementation constraintLayout
     implementation dagger.core
     kapt dagger.compiler

@@ -4,5 +4,5 @@ interface ProductsLocalDataSource {
     fun getProducts(): List<ProductData>
     fun getProductById(guid: String): ProductInDetailData?
     fun saveProducts(products: List<ProductData>)
-    fun saveProductById(product: ProductInDetailData)
+    fun saveProductsInDetail(products: List<ProductInDetailData>)
 }

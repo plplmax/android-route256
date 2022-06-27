@@ -1,37 +1,30 @@
-package dev.ozon.gitlab.plplmax.core_navigation_impl
+package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dev.ozon.gitlab.plplmax.core_network_api.ProductInDetailData
 import dev.ozon.gitlab.plplmax.core_network_api.ProductsApi
+import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetailMapper
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductInDetailUi
-import dev.ozon.gitlab.plplmax.feature_product_detail_impl.domain.toUi
 
 class ProductsInDetailWorker(
     context: Context,
     workerParams: WorkerParameters,
-    private val api: ProductsApi
+    private val api: ProductsApi,
+    private val mapper: ProductInDetailMapper
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
         val response = api.loadProductsInDetail().execute()
 
-        Log.e("DOWORK IN DETAIl", "doWork: $response")
-
         return if (response.isSuccessful) {
-
-            val products = response.body()?.map(ProductInDetailData::toUi)
+            val products = response.body()?.map(mapper::toUi)
 
             val typeToken = object : TypeToken<List<ProductInDetailUi>>() {}.type
-
             val json = Gson().toJson(products, typeToken)
-
-            Log.e("DOWORK IN DETAIl", "doWork: $json", )
 
             Result.success(
                 workDataOf(

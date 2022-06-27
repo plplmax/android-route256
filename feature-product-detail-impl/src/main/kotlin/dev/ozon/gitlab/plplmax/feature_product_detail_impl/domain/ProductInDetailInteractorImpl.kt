@@ -8,7 +8,11 @@ import javax.inject.Inject
 internal class ProductInDetailInteractorImpl @Inject constructor(
     private val repository: ProductInDetailRepository
 ) : ProductInDetailInteractor {
-    override fun getProductById(guid: String): ProductInDetailUi? { // TODO: Remove nullability in the next homework
+    override fun getProductById(guid: String): ProductInDetailUi? {
         return repository.getProductById(guid)
+    }
+
+    override fun saveProductsInDetail(products: List<ProductInDetailUi>) {
+        repository.saveProductsInDetail(products)
     }
 }

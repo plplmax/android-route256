@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
 }
 
+apply from: "../app/dependencies.gradle"
+
 android {
     compileSdk 32
 
@@ -30,4 +32,5 @@ android {
 
 dependencies {
 
+    implementation project(':core-network-api')
 }

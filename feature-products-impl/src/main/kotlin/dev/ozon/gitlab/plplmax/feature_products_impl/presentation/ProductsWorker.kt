@@ -1,4 +1,4 @@
-package dev.ozon.gitlab.plplmax.core_navigation_impl
+package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
 
 import android.content.Context
 import androidx.work.Worker
@@ -21,10 +21,9 @@ class ProductsWorker(
         val response = api.loadProducts().execute()
 
         return if (response.isSuccessful) {
-            val typeToken = object : TypeToken<List<ProductUi>>() {}.type
-
             val products = response.body()?.map(ProductData::toUi)
 
+            val typeToken = object : TypeToken<List<ProductUi>>() {}.type
             val json = Gson().toJson(products, typeToken)
 
             Result.success(workDataOf(PRODUCTS_KEY to json))
