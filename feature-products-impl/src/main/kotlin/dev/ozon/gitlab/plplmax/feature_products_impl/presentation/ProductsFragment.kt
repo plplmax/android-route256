@@ -5,8 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
 import dev.ozon.gitlab.plplmax.core_navigation_api.Navigator
@@ -27,16 +25,17 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     lateinit var navigator: Navigator
 
     private val vm: ProductsViewModel by viewModelCreator {
-        ProductsViewModel(productsInteractor, productInDetailInteractor)
+        ProductsViewModel(
+            productsInteractor,
+            productInDetailInteractor,
+            WorkManager.getInstance(requireContext())
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         (requireActivity() as DependenciesInjector).injectProductsFragment(this)
-
-        val (productsRequest, productsInDetailRequest) = getRequests()
-        runWorkers(productsRequest, productsInDetailRequest)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,27 +50,6 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
             vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)
         }
 
-        vm.observeWorkInfo(requireContext(), viewLifecycleOwner)
-    }
-
-    private fun runWorkers(
-        productsRequest: OneTimeWorkRequest,
-        productsInDetailRequest: OneTimeWorkRequest
-    ) {
-        WorkManager.getInstance(requireContext())
-            .beginUniqueWork("RetrofitWorker", ExistingWorkPolicy.KEEP, productsRequest)
-            .then(productsInDetailRequest)
-            .enqueue()
-    }
-
-    private fun getRequests(): Pair<OneTimeWorkRequest, OneTimeWorkRequest> {
-        return Pair(
-            OneTimeWorkRequest.from(ProductsWorker::class.java),
-            OneTimeWorkRequest.from(ProductsInDetailWorker::class.java)
-        )
-    }
-
-    internal companion object {
-        const val WORK_NAME = "RetrofitWorker"
+        vm.observeWorkInfo(viewLifecycleOwner)
     }
 }

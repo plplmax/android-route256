@@ -1,10 +1,11 @@
 package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
 
-import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.gson.Gson
@@ -16,21 +17,38 @@ import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 
 class ProductsViewModel(
     private val productsInteractor: ProductsInteractor,
-    private val productInDetailInteractor: ProductInDetailInteractor
+    private val productInDetailInteractor: ProductInDetailInteractor,
+    private val workManager: WorkManager
 ) : ViewModel() {
-
-    private var wereWorkersStartedOnce = false
 
     private val _productLD = MutableLiveData<List<ProductUi>>()
     val productLD: LiveData<List<ProductUi>> = _productLD
 
-    fun observeWorkInfo(context: Context, viewLifecycleOwner: LifecycleOwner) {
-        if (wereWorkersStartedOnce) return
+    init {
+        val (productsRequest, productsInDetailRequest) = getRequests()
+        runWorkers(productsRequest, productsInDetailRequest)
+    }
 
-        wereWorkersStartedOnce = true
+    private fun runWorkers(
+        productsRequest: OneTimeWorkRequest,
+        productsInDetailRequest: OneTimeWorkRequest
+    ) {
+        workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
+            .then(productsInDetailRequest)
+            .enqueue()
+    }
 
-        WorkManager.getInstance(context)
-            .getWorkInfosForUniqueWorkLiveData(ProductsFragment.WORK_NAME)
+    private fun getRequests(): Pair<OneTimeWorkRequest, OneTimeWorkRequest> {
+        return Pair(
+            OneTimeWorkRequest.from(ProductsWorker::class.java),
+            OneTimeWorkRequest.from(ProductsInDetailWorker::class.java)
+        )
+    }
+
+    fun observeWorkInfo(viewLifecycleOwner: LifecycleOwner) {
+        _productLD.value?.let { return }
+
+        workManager.getWorkInfosForUniqueWorkLiveData(WORK_NAME)
             .observe(viewLifecycleOwner) { workInfoList ->
                 workInfoList?.let {
                     val worker = it.find { workInfo ->
@@ -67,4 +85,8 @@ class ProductsViewModel(
     }
 
     fun saveProducts() = productsInteractor.saveProducts(productLD.value!!)
+
+    private companion object {
+        const val WORK_NAME = "RetrofitWorker"
+    }
 }
