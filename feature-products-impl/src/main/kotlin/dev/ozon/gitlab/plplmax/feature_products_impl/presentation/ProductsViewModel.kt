@@ -24,7 +24,14 @@ class ProductsViewModel(
     private val _productLD = MutableLiveData<List<ProductUi>>()
     val productLD: LiveData<List<ProductUi>> = _productLD
 
+    private val _errorState = MutableLiveData<Boolean>()
+    val errorState: LiveData<Boolean> = _errorState
+
     init {
+        runBackgroundWork()
+    }
+
+    fun runBackgroundWork() {
         val (productsRequest, productsInDetailRequest) = getRequests()
         runWorkers(productsRequest, productsInDetailRequest)
     }
@@ -78,7 +85,16 @@ class ProductsViewModel(
                             _productLD.value = productsInteractor.getProducts()
                         }
                     } else if (worker.state == WorkInfo.State.FAILED) {
-                        _productLD.value = productsInteractor.getProducts()
+
+                        productsInteractor.getProducts().let { productsInCache ->
+                            _errorState.value = if (productsInCache.isEmpty()) {
+                                true
+                            } else {
+                                _productLD.value = productsInCache
+                                false
+                            }
+                        }
+
                     }
                 }
             }

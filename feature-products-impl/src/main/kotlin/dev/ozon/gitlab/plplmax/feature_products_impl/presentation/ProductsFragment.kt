@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
+import com.google.android.material.snackbar.Snackbar
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
 import dev.ozon.gitlab.plplmax.core_navigation_api.Navigator
 import dev.ozon.gitlab.plplmax.core_utils.viewModelCreator
@@ -51,5 +52,18 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         }
 
         vm.observeWorkInfo(viewLifecycleOwner)
+        vm.errorState.observe(viewLifecycleOwner) { isError ->
+            if (isError) showError()
+        }
+    }
+
+    private fun showError() {
+        Snackbar.make(
+            requireView(),
+            dev.ozon.gitlab.plplmax.core_resources.R.string.something_went_wrong,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(dev.ozon.gitlab.plplmax.core_resources.R.string.retry) {
+            vm.runBackgroundWork()
+        }.show()
     }
 }
