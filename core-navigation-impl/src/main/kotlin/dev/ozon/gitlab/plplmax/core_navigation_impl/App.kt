@@ -8,20 +8,23 @@ import com.google.gson.Gson
 import dev.ozon.gitlab.plplmax.core_navigation_impl.di.Dependencies
 import dev.ozon.gitlab.plplmax.core_network_api.ProductsApi
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetailMapper
+import javax.inject.Inject
 
 class App : Application(), Configuration.Provider {
 
-    private lateinit var api: ProductsApi
+    @Inject
+    lateinit var api: ProductsApi
+
+    @Inject
+    lateinit var gson: Gson
+
     private lateinit var mapper: ProductInDetailMapper
-    private lateinit var gson: Gson
 
     override fun onCreate() {
         super.onCreate()
 
         Dependencies.initAppComponent(this)
-        api = Dependencies.appComponent!!.productsApi()
         mapper = Dependencies.featureProductDetailComponent.productInDetailMapper()
-        gson = Dependencies.appComponent!!.gson()
 
         WorkManager.initialize(this, workManagerConfiguration)
     }

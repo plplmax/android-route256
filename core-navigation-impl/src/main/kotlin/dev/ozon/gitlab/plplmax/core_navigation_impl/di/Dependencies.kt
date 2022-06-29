@@ -1,6 +1,6 @@
 package dev.ozon.gitlab.plplmax.core_navigation_impl.di
 
-import android.content.Context
+import dev.ozon.gitlab.plplmax.core_navigation_impl.App
 import dev.ozon.gitlab.plplmax.feature_product_detail_impl.di.DaggerFeatureProductDetailComponent
 import dev.ozon.gitlab.plplmax.feature_product_detail_impl.di.FeatureProductDetailComponent
 import dev.ozon.gitlab.plplmax.feature_products_impl.di.DaggerFeatureProductsComponent
@@ -21,9 +21,10 @@ internal object Dependencies {
             .build()
     }
 
-    internal fun initAppComponent(context: Context) {
+    internal fun initAppComponent(app: App) {
         if (appComponent == null) appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(context))
+            .appModule(AppModule(context = app))
             .build()
+            .also { it.inject(app) }
     }
 }
