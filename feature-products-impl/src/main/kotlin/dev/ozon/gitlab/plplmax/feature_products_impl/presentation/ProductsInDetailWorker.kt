@@ -14,7 +14,8 @@ class ProductsInDetailWorker(
     context: Context,
     workerParams: WorkerParameters,
     private val api: ProductsApi,
-    private val mapper: ProductInDetailMapper
+    private val mapper: ProductInDetailMapper,
+    private val gson: Gson
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
@@ -24,7 +25,7 @@ class ProductsInDetailWorker(
             val products = response.body()?.map(mapper::toUi)
 
             val typeToken = object : TypeToken<List<ProductInDetailUi>>() {}.type
-            val json = Gson().toJson(products, typeToken)
+            val json = gson.toJson(products, typeToken)
 
             Result.success(
                 workDataOf(

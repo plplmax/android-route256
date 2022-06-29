@@ -18,7 +18,8 @@ import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 class ProductsViewModel(
     private val productsInteractor: ProductsInteractor,
     private val productInDetailInteractor: ProductInDetailInteractor,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val gson: Gson
 ) : ViewModel() {
 
     private val _productLD = MutableLiveData<List<ProductUi>>()
@@ -71,7 +72,7 @@ class ProductsViewModel(
                         val productsInDetailTypeToken =
                             object : TypeToken<List<ProductInDetailUi>>() {}.type
 
-                        with(Gson()) {
+                        with(gson) {
                             val products =
                                 fromJson<List<ProductUi>>(productsJson, productsTypeToken)
                             val productsInDetail = fromJson<List<ProductInDetailUi>>(

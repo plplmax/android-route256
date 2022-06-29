@@ -7,6 +7,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
 import dev.ozon.gitlab.plplmax.core_navigation_api.Navigator
 import dev.ozon.gitlab.plplmax.core_utils.viewModelCreator
@@ -23,13 +24,17 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     lateinit var productInDetailInteractor: ProductInDetailInteractor
 
     @Inject
+    lateinit var gson: Gson
+
+    @Inject
     lateinit var navigator: Navigator
 
     private val vm: ProductsViewModel by viewModelCreator {
         ProductsViewModel(
             productsInteractor,
             productInDetailInteractor,
-            WorkManager.getInstance(requireContext())
+            WorkManager.getInstance(requireContext()),
+            gson
         )
     }
 

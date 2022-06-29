@@ -36,4 +36,5 @@ dependencies {
 
     implementation appCompat
     implementation navigation.values()
+    implementation retrofit.gson
 }

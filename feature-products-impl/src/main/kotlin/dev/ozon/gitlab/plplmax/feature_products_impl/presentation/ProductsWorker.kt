@@ -14,7 +14,8 @@ import dev.ozon.gitlab.plplmax.feature_products_impl.domain.toUi
 class ProductsWorker(
     context: Context,
     workerParams: WorkerParameters,
-    private val api: ProductsApi
+    private val api: ProductsApi,
+    private val gson: Gson
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
@@ -24,7 +25,7 @@ class ProductsWorker(
             val products = response.body()?.map(ProductData::toUi)
 
             val typeToken = object : TypeToken<List<ProductUi>>() {}.type
-            val json = Gson().toJson(products, typeToken)
+            val json = gson.toJson(products, typeToken)
 
             Result.success(workDataOf(PRODUCTS_KEY to json))
         } else Result.failure()
