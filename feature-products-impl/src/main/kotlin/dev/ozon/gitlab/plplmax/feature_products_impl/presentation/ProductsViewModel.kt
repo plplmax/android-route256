@@ -53,7 +53,7 @@ class ProductsViewModel(
     }
 
     fun observeWorkInfo(viewLifecycleOwner: LifecycleOwner) {
-        _productLD.value?.let { return }
+        if (_productLD.value != null) return
 
         workManager.getWorkInfosForUniqueWorkLiveData(WORK_NAME)
             .observe(viewLifecycleOwner) { workInfoList ->
