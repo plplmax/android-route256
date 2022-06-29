@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
 }
 
+apply from: "../app/dependencies.gradle"
+
 android {
     compileSdk 32
 
@@ -30,5 +32,8 @@ android {
 
 dependencies {
 
-    implementation project(':core-network-api')
+    implementation project(':feature-products-api')
+    implementation project(':feature-product-detail-api')
+
+    implementation liveData
 }

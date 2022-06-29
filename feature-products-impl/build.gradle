@@ -39,6 +39,7 @@ dependencies {
     implementation project(':core-network-api')
     implementation project(':feature-products-api')
     implementation project(':feature-product-detail-api')
+    implementation project(':work-manager-api')
 
     implementation appCompat
     implementation navigation.values()

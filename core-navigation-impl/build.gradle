@@ -37,6 +37,8 @@ dependencies {
     implementation project(':core-navigation-api')
     implementation project(':core-network-api')
     implementation project(':core-network-impl')
+    implementation project(':work-manager-api')
+    implementation project(':work-manager-impl')
     implementation project(':feature-products-api')
     implementation project(':feature-products-impl')
     implementation project(':feature-product-detail-api')

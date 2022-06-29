@@ -1,7 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
+
+apply from: "../app/dependencies.gradle"
 
 android {
     compileSdk 32
@@ -30,5 +33,15 @@ android {
 
 dependencies {
 
+    implementation project(':core-utils')
     implementation project(':core-network-api')
+    implementation project(':feature-products-api')
+    implementation project(':feature-product-detail-api')
+    implementation project(':work-manager-api')
+
+    implementation liveData
+    implementation workManager
+    implementation dagger.core
+    kapt dagger.compiler
+    implementation retrofit.gson
 }

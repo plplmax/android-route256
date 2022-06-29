@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
@@ -14,6 +13,7 @@ import dev.ozon.gitlab.plplmax.core_utils.viewModelCreator
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetailInteractor
 import dev.ozon.gitlab.plplmax.feature_products_api.domain.ProductsInteractor
 import dev.ozon.gitlab.plplmax.feature_products_impl.R
+import dev.ozon.gitlab.plplmax.work_manager_api.ProductsManager
 import javax.inject.Inject
 
 class ProductsFragment : Fragment(R.layout.fragment_products) {
@@ -29,12 +29,14 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     @Inject
     lateinit var navigator: Navigator
 
+    @Inject
+    lateinit var productsManager: ProductsManager
+
     private val vm: ProductsViewModel by viewModelCreator {
         ProductsViewModel(
             productsInteractor,
             productInDetailInteractor,
-            WorkManager.getInstance(requireContext()),
-            gson
+            productsManager
         )
     }
 
@@ -56,9 +58,8 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
             vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)
         }
 
-        vm.observeWorkInfo(viewLifecycleOwner)
-        vm.errorState.observe(viewLifecycleOwner) { isError ->
-            if (isError) showError()
+        vm.observeWorkInfo(viewLifecycleOwner) { refreshResult ->
+            if (refreshResult.isFailure) showError()
         }
     }
 
@@ -68,7 +69,7 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
             dev.ozon.gitlab.plplmax.core_resources.R.string.something_went_wrong,
             Snackbar.LENGTH_INDEFINITE
         ).setAction(dev.ozon.gitlab.plplmax.core_resources.R.string.retry) {
-            vm.runBackgroundWork()
+            vm.refreshAllProducts()
         }.show()
     }
 }

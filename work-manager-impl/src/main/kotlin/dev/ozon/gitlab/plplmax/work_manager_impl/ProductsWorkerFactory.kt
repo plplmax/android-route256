@@ -1,4 +1,4 @@
-package dev.ozon.gitlab.plplmax.core_navigation_impl
+package dev.ozon.gitlab.plplmax.work_manager_impl
 
 import android.content.Context
 import androidx.work.ListenableWorker
@@ -7,12 +7,14 @@ import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import dev.ozon.gitlab.plplmax.core_network_api.ProductsApi
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetailMapper
-import dev.ozon.gitlab.plplmax.feature_products_impl.presentation.ProductsInDetailWorker
-import dev.ozon.gitlab.plplmax.feature_products_impl.presentation.ProductsWorker
+import dev.ozon.gitlab.plplmax.feature_products_api.domain.ProductMapper
+import dev.ozon.gitlab.plplmax.work_manager_impl.ProductsInDetailWorker
+import dev.ozon.gitlab.plplmax.work_manager_impl.ProductsWorker
 
 class ProductsWorkerFactory(
     private val api: ProductsApi,
-    private val mapper: ProductInDetailMapper,
+    private val productMapper: ProductMapper,
+    private val productInDetailMapper: ProductInDetailMapper,
     private val gson: Gson
 ) : WorkerFactory() {
 
@@ -26,13 +28,14 @@ class ProductsWorkerFactory(
                 appContext,
                 workerParameters,
                 api,
+                productMapper,
                 gson
             )
             ProductsInDetailWorker::class.qualifiedName -> ProductsInDetailWorker(
                 appContext,
                 workerParameters,
                 api,
-                mapper,
+                productInDetailMapper,
                 gson
             )
             else -> null

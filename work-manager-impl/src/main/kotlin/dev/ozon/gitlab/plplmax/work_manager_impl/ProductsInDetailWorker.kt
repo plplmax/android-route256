@@ -1,4 +1,4 @@
-package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
+package dev.ozon.gitlab.plplmax.work_manager_impl
 
 import android.content.Context
 import androidx.work.Worker

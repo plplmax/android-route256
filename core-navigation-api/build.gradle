@@ -33,6 +33,7 @@ android {
 dependencies {
 
     implementation project(':core-network-api')
+    implementation project(':work-manager-api')
 
     implementation appCompat
     implementation navigation.values()
