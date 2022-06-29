@@ -14,6 +14,7 @@ import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetail
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductInDetailUi
 import dev.ozon.gitlab.plplmax.feature_products_api.domain.ProductsInteractor
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
+import java.util.*
 
 class ProductsViewModel(
     private val productsInteractor: ProductsInteractor,
@@ -28,12 +29,16 @@ class ProductsViewModel(
     private val _errorState = MutableLiveData<Boolean>()
     val errorState: LiveData<Boolean> = _errorState
 
+    private lateinit var workId: UUID
+
     init {
         runBackgroundWork()
     }
 
     fun runBackgroundWork() {
         val (productsRequest, productsInDetailRequest) = getRequests()
+        workId = productsInDetailRequest.id
+
         runWorkers(productsRequest, productsInDetailRequest)
     }
 
@@ -56,17 +61,13 @@ class ProductsViewModel(
     fun observeWorkInfo(viewLifecycleOwner: LifecycleOwner) {
         if (_productLD.value != null) return
 
-        workManager.getWorkInfosForUniqueWorkLiveData(WORK_NAME)
-            .observe(viewLifecycleOwner) { workInfoList ->
-                workInfoList?.let {
-                    val worker = it.find { workInfo ->
-                        workInfo?.tags?.contains(ProductsInDetailWorker::class.qualifiedName) == true
-                    } ?: return@observe
-
-                    if (worker.state == WorkInfo.State.SUCCEEDED) {
-                        val productsJson = worker.outputData.getString(ProductsWorker.PRODUCTS_KEY)
+        workManager.getWorkInfoByIdLiveData(workId)
+            .observe(viewLifecycleOwner) { workInfo ->
+                workInfo?.run {
+                    if (state == WorkInfo.State.SUCCEEDED) {
+                        val productsJson = outputData.getString(ProductsWorker.PRODUCTS_KEY)
                         val productsInDetailJson =
-                            worker.outputData.getString(ProductsInDetailWorker.PRODUCTS_IN_DETAIL_KEY)
+                            outputData.getString(ProductsInDetailWorker.PRODUCTS_IN_DETAIL_KEY)
 
                         val productsTypeToken = object : TypeToken<List<ProductUi>>() {}.type
                         val productsInDetailTypeToken =
@@ -85,7 +86,7 @@ class ProductsViewModel(
 
                             _productLD.value = productsInteractor.getProducts()
                         }
-                    } else if (worker.state == WorkInfo.State.FAILED) {
+                    } else if (state == WorkInfo.State.FAILED) {
 
                         productsInteractor.getProducts().let { productsInCache ->
                             _errorState.value = if (productsInCache.isEmpty()) {
