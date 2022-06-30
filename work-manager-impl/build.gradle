@@ -40,7 +40,7 @@ dependencies {
     implementation project(':work-manager-api')
 
     implementation liveData
-    implementation workManager
+    implementation workManager.values()
     implementation dagger.core
     kapt dagger.compiler
     implementation retrofit.gson

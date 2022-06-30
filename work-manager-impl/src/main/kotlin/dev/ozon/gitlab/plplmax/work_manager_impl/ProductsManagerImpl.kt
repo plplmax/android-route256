@@ -3,15 +3,13 @@ package dev.ozon.gitlab.plplmax.work_manager_impl
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.work.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductInDetailUi
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 import dev.ozon.gitlab.plplmax.work_manager_api.ProductsManager
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductsManagerImpl @Inject constructor(
@@ -24,8 +22,14 @@ class ProductsManagerImpl @Inject constructor(
     private val productsTypeToken = object : TypeToken<List<ProductUi>>() {}.type
     private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailUi>>() {}.type
 
+    private var lastUpdateTimestamp = System.currentTimeMillis()
+
     override fun refreshAllProducts() {
         runWorkers()
+    }
+
+    override fun refreshAllProductsWithDelay() {
+        runWorkersWithDelay()
     }
 
     private fun runWorkers() {
@@ -35,6 +39,39 @@ class ProductsManagerImpl @Inject constructor(
         workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
             .then(productsInDetailRequest)
             .enqueue()
+    }
+
+    private fun runWorkersWithDelay() {
+        val internetConstraint = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val delay = computeDelayInMillis()
+
+        val productsRequest =
+            OneTimeWorkRequestBuilder<ProductsWorker>()
+                .setConstraints(internetConstraint)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build()
+        val productsInDetailRequest =
+            OneTimeWorkRequestBuilder<ProductsInDetailWorker>()
+                .setConstraints(internetConstraint)
+                .build()
+
+        workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
+            .then(productsInDetailRequest)
+            .enqueue()
+    }
+
+    private fun computeDelayInMillis(): Long {
+        val currentTimestamp = System.currentTimeMillis()
+        val passedTime = currentTimestamp - lastUpdateTimestamp
+
+        return if (passedTime >= fiveMinutesInMillis) {
+            0
+        } else {
+            fiveMinutesInMillis - passedTime
+        }
     }
 
     override fun observeState(
@@ -104,6 +141,8 @@ class ProductsManagerImpl @Inject constructor(
         onProductsSuccess(products)
         onProductsInDetailSuccess(productsInDetail)
 
+        lastUpdateTimestamp = System.currentTimeMillis()
+
         refreshState.value = Result.success(Unit)
     }
 
@@ -137,5 +176,6 @@ class ProductsManagerImpl @Inject constructor(
 
     private companion object {
         const val WORK_NAME = "RetrofitWorker"
+        const val fiveMinutesInMillis = 300_000L
     }
 }

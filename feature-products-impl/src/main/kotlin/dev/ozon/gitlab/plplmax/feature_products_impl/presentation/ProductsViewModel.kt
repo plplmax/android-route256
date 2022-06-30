@@ -23,12 +23,14 @@ class ProductsViewModel(
         productsManager.refreshAllProducts()
     }
 
+    fun refreshAllProductsWithDelay() {
+        productsManager.refreshAllProductsWithDelay()
+    }
+
     fun observeWorkInfo(
         viewLifecycleOwner: LifecycleOwner,
         productsRefreshState: Observer<Result<Unit>>
     ) {
-        if (_productLD.value != null) return
-
         productsManager.observeState(
             viewLifecycleOwner,
             productsRefreshState,

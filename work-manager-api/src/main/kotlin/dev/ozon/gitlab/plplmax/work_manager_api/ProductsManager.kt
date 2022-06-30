@@ -8,6 +8,8 @@ import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 interface ProductsManager {
     fun refreshAllProducts()
 
+    fun refreshAllProductsWithDelay()
+
     fun observeState(
         viewLifecycleOwner: LifecycleOwner,
         observer: Observer<Result<Unit>>,
