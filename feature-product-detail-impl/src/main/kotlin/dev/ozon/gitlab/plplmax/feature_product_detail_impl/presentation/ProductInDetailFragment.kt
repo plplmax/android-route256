@@ -7,6 +7,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
 import dev.ozon.gitlab.plplmax.core_utils.load
 import dev.ozon.gitlab.plplmax.core_utils.viewModelCreator
@@ -37,21 +38,23 @@ class ProductInDetailFragment : Fragment(R.layout.pdp_fragment) {
         val priceTV: TextView = view.findViewById(R.id.priceTV)
         val ratingView: RatingBar = view.findViewById(R.id.ratingView)
 
-        vm.product.observe(viewLifecycleOwner) {
-            if (it.images.isNotEmpty()) {
-                productIV.load(it.images[0])
-            }
+        vm.product.observe(viewLifecycleOwner) { product ->
+            product?.let {
+                if (it.images.isNotEmpty()) {
+                    productIV.load(it.images[0])
+                }
 
-            nameTV.text = it.name
-            priceTV.text = it.price
-            ratingView.rating = it.rating.toFloat()
+                nameTV.text = it.name
+                priceTV.text = it.price
+                ratingView.rating = it.rating.toFloat()
+            } ?: findNavController().popBackStack()
         }
 
         arguments?.let { bundle ->
             bundle.getString(GUID_KEY)?.let {
                 vm.getProductById(it)
             }
-        }
+        } ?: findNavController().popBackStack()
     }
 
     companion object {

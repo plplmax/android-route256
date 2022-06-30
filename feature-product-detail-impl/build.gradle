@@ -37,10 +37,14 @@ dependencies {
     implementation project(':core-resources')
     implementation project(':core-navigation-api')
     implementation project(':core-network-api')
+    implementation project(':work-manager-api')
     implementation project(':feature-product-detail-api')
 
     implementation appCompat
+    implementation navigation.values()
     implementation constraintLayout
     implementation dagger.core
     kapt dagger.compiler
+    implementation retrofit.values()
+    implementation workManager
 }

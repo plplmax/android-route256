@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ProductsRemoteDataSourceImpl @Inject constructor() : ProductsRemoteDataSource {
     override fun getProducts(): List<ProductData> = productsData
 
-    override fun getProductById(guid: String): ProductInDetailData? { // TODO: Remove nullability in the next homework
+    override fun getProductById(guid: String): ProductInDetailData? {
         return productsInDetailData.find { it.guid == guid }
     }
 }

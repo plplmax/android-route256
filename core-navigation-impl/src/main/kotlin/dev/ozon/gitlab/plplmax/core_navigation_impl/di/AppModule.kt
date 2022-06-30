@@ -9,7 +9,6 @@ import dev.ozon.gitlab.plplmax.core_utils.AppScope
 @Module
 internal class AppModule(
     private val context: Context,
-    private val gson: Gson = Gson()
 ) {
 
     @Provides
@@ -18,5 +17,5 @@ internal class AppModule(
 
     @Provides
     @AppScope
-    fun provideGson(): Gson = gson
+    fun provideGson(): Gson = Gson()
 }

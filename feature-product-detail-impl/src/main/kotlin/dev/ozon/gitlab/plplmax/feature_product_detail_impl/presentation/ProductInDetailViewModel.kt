@@ -10,8 +10,8 @@ class ProductInDetailViewModel(
     private val interactor: ProductInDetailInteractor
 ) : ViewModel() {
 
-    private val _product = MutableLiveData<ProductInDetailUi>()
-    val product: LiveData<ProductInDetailUi> = _product
+    private val _product = MutableLiveData<ProductInDetailUi?>()
+    val product: LiveData<ProductInDetailUi?> = _product
 
     fun getProductById(guid: String) {
         _product.value = interactor.getProductById(guid)

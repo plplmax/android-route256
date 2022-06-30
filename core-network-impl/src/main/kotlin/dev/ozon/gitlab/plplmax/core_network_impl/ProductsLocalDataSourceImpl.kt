@@ -12,7 +12,7 @@ class ProductsLocalDataSourceImpl @Inject constructor(
 ) : ProductsLocalDataSource {
 
     private val productsTypeToken = object : TypeToken<List<ProductData>>() {}
-    private val productInDetailTypeToken = object : TypeToken<ProductInDetailData>() {}
+    private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailData>>() {}
 
     override fun getProducts(): List<ProductData> {
         return sharedPrefsProvider.getObject(FILENAME_PRODUCTS, PRODUCT_LIST_KEY, productsTypeToken)
@@ -22,9 +22,9 @@ class ProductsLocalDataSourceImpl @Inject constructor(
     override fun getProductById(guid: String): ProductInDetailData? {
         return sharedPrefsProvider.getObject(
             FILENAME_PRODUCTS_IN_DETAIL,
-            guid,
-            productInDetailTypeToken
-        )
+            PRODUCT_IN_DETAIL_LIST_KEY,
+            productsInDetailTypeToken
+        )?.find { it.guid == guid }
     }
 
     override fun saveProducts(products: List<ProductData>) {
@@ -36,12 +36,12 @@ class ProductsLocalDataSourceImpl @Inject constructor(
         )
     }
 
-    override fun saveProductById(product: ProductInDetailData) {
+    override fun saveProductsInDetail(products: List<ProductInDetailData>) {
         sharedPrefsProvider.saveObject(
             FILENAME_PRODUCTS_IN_DETAIL,
-            product.guid,
-            product,
-            productInDetailTypeToken
+            PRODUCT_IN_DETAIL_LIST_KEY,
+            products,
+            productsInDetailTypeToken
         )
     }
 
@@ -50,5 +50,6 @@ class ProductsLocalDataSourceImpl @Inject constructor(
         const val FILENAME_PRODUCTS_IN_DETAIL = "products_in_detail"
 
         const val PRODUCT_LIST_KEY = "product_list_key"
+        const val PRODUCT_IN_DETAIL_LIST_KEY = "product_in_detail_list_key"
     }
 }
