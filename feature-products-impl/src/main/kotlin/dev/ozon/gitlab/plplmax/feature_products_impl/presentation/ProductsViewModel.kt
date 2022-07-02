@@ -37,16 +37,16 @@ class ProductsViewModel(
     ) {
         productsManager.observeState(
             viewLifecycleOwner,
-            productsRefreshState,
-            { productsList ->
+            observer = productsRefreshState,
+            onProductsSuccess = { productsList ->
                 productsInteractor.saveProducts(productsList)
 
                 _productLD.value = productsInteractor.getProducts()
             },
-            { productsInDetailList ->
+            onProductsInDetailSuccess = { productsInDetailList ->
                 productInDetailInteractor.saveProductsInDetail(productsInDetailList)
             },
-            { productsInteractor.getProducts() }
+            productsInCache = { productsInteractor.getProducts() }
         )
     }
 
