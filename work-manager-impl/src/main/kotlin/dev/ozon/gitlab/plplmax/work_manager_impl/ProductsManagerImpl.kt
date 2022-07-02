@@ -67,10 +67,10 @@ class ProductsManagerImpl @Inject constructor(
         val currentTimestamp = System.currentTimeMillis()
         val passedTime = currentTimestamp - lastUpdateTimestamp
 
-        return if (passedTime >= fiveMinutesInMillis) {
+        return if (passedTime >= FIVE_MINUTES_IN_MILLIS) {
             0
         } else {
-            fiveMinutesInMillis - passedTime
+            FIVE_MINUTES_IN_MILLIS - passedTime
         }
     }
 
@@ -176,6 +176,6 @@ class ProductsManagerImpl @Inject constructor(
 
     private companion object {
         private const val WORK_NAME = "RetrofitWorker"
-        private const val fiveMinutesInMillis = 300_000L
+        private const val FIVE_MINUTES_IN_MILLIS = 300_000L
     }
 }
