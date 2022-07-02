@@ -175,7 +175,7 @@ class ProductsManagerImpl @Inject constructor(
     }
 
     private companion object {
-        const val WORK_NAME = "RetrofitWorker"
-        const val fiveMinutesInMillis = 300_000L
+        private const val WORK_NAME = "RetrofitWorker"
+        private const val fiveMinutesInMillis = 300_000L
     }
 }
