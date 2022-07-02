@@ -32,6 +32,10 @@ class ProductsManagerImpl @Inject constructor(
         runWorkersWithDelay()
     }
 
+    override fun stopAllRefreshes() {
+        workManager.cancelUniqueWork(WORK_NAME)
+    }
+
     private fun runWorkers() {
         val productsRequest = OneTimeWorkRequest.from(ProductsWorker::class.java)
         val productsInDetailRequest = OneTimeWorkRequest.from(ProductsInDetailWorker::class.java)

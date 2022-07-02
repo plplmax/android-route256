@@ -10,6 +10,8 @@ interface ProductsManager {
 
     fun refreshAllProductsWithDelay()
 
+    fun stopAllRefreshes()
+
     fun observeState(
         viewLifecycleOwner: LifecycleOwner,
         observer: Observer<Result<Unit>>,

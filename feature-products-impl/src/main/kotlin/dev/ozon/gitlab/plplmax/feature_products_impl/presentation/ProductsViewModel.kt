@@ -27,6 +27,10 @@ class ProductsViewModel(
         productsManager.refreshAllProductsWithDelay()
     }
 
+    fun stopAllRefreshes() {
+        productsManager.stopAllRefreshes()
+    }
+
     fun observeWorkInfo(
         viewLifecycleOwner: LifecycleOwner,
         productsRefreshState: Observer<Result<Unit>>

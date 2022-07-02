@@ -64,6 +64,20 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (vm.productLD.value != null) {
+            vm.refreshAllProductsWithDelay()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        vm.stopAllRefreshes()
+    }
+
     private fun showError() {
         Snackbar.make(
             requireView(),
