@@ -19,8 +19,12 @@ class ProductsManagerImpl @Inject constructor(
 
     private val refreshState = MutableLiveData<Result<Unit>>()
 
-    private val productsTypeToken = object : TypeToken<List<ProductUi>>() {}.type
-    private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailUi>>() {}.type
+    private val productsTypeToken = object : TypeToken<List<ProductUi>>() {}
+    private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailUi>>() {}
+
+    private val internetConstraint = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
 
     private var lastUpdateTimestamp = System.currentTimeMillis()
 
@@ -40,32 +44,31 @@ class ProductsManagerImpl @Inject constructor(
         val productsRequest = OneTimeWorkRequest.from(ProductsWorker::class.java)
         val productsInDetailRequest = OneTimeWorkRequest.from(ProductsInDetailWorker::class.java)
 
-        workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
-            .then(productsInDetailRequest)
-            .enqueue()
+        beginWork(productsRequest, productsInDetailRequest)
     }
 
     private fun runWorkersWithDelay() {
-        val internetConstraint = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
         val delay = computeDelayInMillis()
 
-        val productsRequest =
-            OneTimeWorkRequestBuilder<ProductsWorker>()
-                .setConstraints(internetConstraint)
-                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .build()
-        val productsInDetailRequest =
-            OneTimeWorkRequestBuilder<ProductsInDetailWorker>()
-                .setConstraints(internetConstraint)
-                .build()
+        val productsRequest = formRequest<ProductsWorker>(internetConstraint, delay)
+        val productsInDetailRequest = formRequest<ProductsInDetailWorker>(internetConstraint)
 
-        workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
-            .then(productsInDetailRequest)
-            .enqueue()
+        beginWork(productsRequest, productsInDetailRequest)
     }
+
+    private inline fun <reified T : ListenableWorker> formRequest(
+        constraints: Constraints,
+        initialDelayInMillis: Long = 0
+    ): OneTimeWorkRequest = OneTimeWorkRequestBuilder<T>().setConstraints(constraints)
+        .setInitialDelay(initialDelayInMillis, TimeUnit.MILLISECONDS)
+        .build()
+
+    private fun beginWork(
+        productsRequest: OneTimeWorkRequest,
+        productsInDetailRequest: OneTimeWorkRequest
+    ): Operation = workManager.beginUniqueWork(WORK_NAME, ExistingWorkPolicy.KEEP, productsRequest)
+        .then(productsInDetailRequest)
+        .enqueue()
 
     private fun computeDelayInMillis(): Long {
         val currentTimestamp = System.currentTimeMillis()
@@ -102,37 +105,25 @@ class ProductsManagerImpl @Inject constructor(
     ) {
         workManager.getWorkInfosForUniqueWorkLiveData(WORK_NAME)
             .observe(viewLifecycleOwner) { workInfoList ->
-                workInfoList?.find {
+                val workInfo = workInfoList?.find {
                     it?.tags?.contains(ProductsInDetailWorker::class.qualifiedName) ?: false
                 }
-                    ?.let {
-                        handleWorkInfo(
-                            it,
+
+                workInfo?.run {
+                    if (state == WorkInfo.State.SUCCEEDED) {
+                        handleWorkSuccess(
+                            this,
                             onProductsSuccess,
-                            onProductsInDetailSuccess,
+                            onProductsInDetailSuccess
+                        )
+                    } else if (state == WorkInfo.State.FAILED) {
+                        handleWorkFailure(
+                            onProductsSuccess,
                             productsInCache
                         )
                     }
+                }
             }
-    }
-
-    private fun handleWorkInfo(
-        workInfo: WorkInfo,
-        onProductsSuccess: (List<ProductUi>) -> Unit,
-        onProductsInDetailSuccess: (List<ProductInDetailUi>) -> Unit,
-        productsInCache: () -> List<ProductUi>
-    ) {
-        with(workInfo) {
-            if (state == WorkInfo.State.SUCCEEDED) handleWorkSuccess(
-                workInfo,
-                onProductsSuccess,
-                onProductsInDetailSuccess
-            )
-            else if (state == WorkInfo.State.FAILED) handleWorkFailure(
-                onProductsSuccess,
-                productsInCache
-            )
-        }
     }
 
     private fun handleWorkSuccess(
@@ -140,7 +131,12 @@ class ProductsManagerImpl @Inject constructor(
         onProductsSuccess: (List<ProductUi>) -> Unit,
         onProductsInDetailSuccess: (List<ProductInDetailUi>) -> Unit
     ) {
-        val (products, productsInDetail) = getOutputData(workInfo)
+        val products = getOutputData(workInfo, ProductsWorker.PRODUCTS_KEY, productsTypeToken)
+        val productsInDetail = getOutputData(
+            workInfo,
+            ProductsInDetailWorker.PRODUCTS_IN_DETAIL_KEY,
+            productsInDetailTypeToken
+        )
 
         onProductsSuccess(products)
         onProductsInDetailSuccess(productsInDetail)
@@ -150,31 +146,25 @@ class ProductsManagerImpl @Inject constructor(
         refreshState.value = Result.success(Unit)
     }
 
-    private fun getOutputData(workInfo: WorkInfo): Pair<List<ProductUi>, List<ProductInDetailUi>> {
-        val productsJson = workInfo.outputData.getString(ProductsWorker.PRODUCTS_KEY)
-        val productsInDetailJson =
-            workInfo.outputData.getString(ProductsInDetailWorker.PRODUCTS_IN_DETAIL_KEY)
+    private fun <T> getOutputData(workInfo: WorkInfo, key: String, typeToken: TypeToken<T>): T {
+        val json = workInfo.outputData.getString(key)
 
-        val products = gson.fromJson<List<ProductUi>>(productsJson, productsTypeToken)
-        val productsInDetail = gson.fromJson<List<ProductInDetailUi>>(
-            productsInDetailJson,
-            productsInDetailTypeToken
-        )
+        val dataType = typeToken.type
 
-        return Pair(products, productsInDetail)
+        return gson.fromJson(json, dataType)
     }
 
     private fun handleWorkFailure(
         onProductsSuccess: (List<ProductUi>) -> Unit,
         productsInCache: () -> List<ProductUi>
     ) {
-        with(productsInCache()) {
-            refreshState.value = if (isEmpty()) {
-                Result.failure(Throwable())
-            } else {
-                onProductsSuccess(this)
-                Result.success(Unit)
-            }
+        val products = productsInCache()
+
+        refreshState.value = if (products.isEmpty()) {
+            Result.failure(Throwable())
+        } else {
+            onProductsSuccess(products)
+            Result.success(Unit)
         }
     }
 
