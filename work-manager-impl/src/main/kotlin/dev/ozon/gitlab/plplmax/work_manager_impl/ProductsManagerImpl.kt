@@ -26,7 +26,7 @@ class ProductsManagerImpl @Inject constructor(
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
 
-    private var lastUpdateTimestamp = System.currentTimeMillis()
+    private var lastUpdateTimestamp = 0L
 
     override fun refreshAllProducts() {
         runWorkers()
