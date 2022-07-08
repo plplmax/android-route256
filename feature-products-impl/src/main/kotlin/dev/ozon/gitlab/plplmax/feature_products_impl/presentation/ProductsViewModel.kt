@@ -16,6 +16,16 @@ class ProductsViewModel(
     private val _productLD = MutableLiveData<List<ProductUi>>()
     val productLD: LiveData<List<ProductUi>> = _productLD
 
+    val productsBelow100Rubles: LiveData<List<ProductUi>> =
+        Transformations.map(_productLD) { productsList ->
+            productsList.filter { it.price.toInt() < 100 }
+        }
+
+    val productsEqOrAbove100Rubles: LiveData<List<ProductUi>> =
+        Transformations.map(_productLD) { productsList ->
+            productsList.filter { it.price.toInt() >= 100 }
+        }
+
     private val compositeDisposable = CompositeDisposable()
 
     init {

@@ -42,6 +42,7 @@ dependencies {
     implementation project(':work-manager-api')
 
     implementation appCompat
+    implementation recyclerView
     implementation navigation.values()
     implementation dagger.core
     kapt dagger.compiler
