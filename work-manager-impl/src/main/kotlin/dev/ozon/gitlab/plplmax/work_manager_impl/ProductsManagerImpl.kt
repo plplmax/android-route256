@@ -9,6 +9,8 @@ import com.google.gson.reflect.TypeToken
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductInDetailUi
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 import dev.ozon.gitlab.plplmax.work_manager_api.ProductsManager
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -18,6 +20,9 @@ class ProductsManagerImpl @Inject constructor(
 ) : ProductsManager {
 
     private val refreshState = MutableLiveData<Result<Unit>>()
+
+    private val _products = BehaviorSubject.create<List<ProductUi>>()
+    private val _productsInDetail = BehaviorSubject.create<List<ProductInDetailUi>>()
 
     private val productsTypeToken = object : TypeToken<List<ProductUi>>() {}
     private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailUi>>() {}
@@ -38,6 +43,14 @@ class ProductsManagerImpl @Inject constructor(
 
     override fun stopAllRefreshes() {
         workManager.cancelUniqueWork(WORK_NAME)
+    }
+
+    override fun productsObservable(): Observable<List<ProductUi>> {
+        return _products
+    }
+
+    override fun productsInDetailObservable(): Observable<List<ProductInDetailUi>> {
+        return _productsInDetail
     }
 
     private fun runWorkers() {
@@ -84,23 +97,17 @@ class ProductsManagerImpl @Inject constructor(
     override fun observeState(
         viewLifecycleOwner: LifecycleOwner,
         observer: Observer<Result<Unit>>,
-        onProductsSuccess: (List<ProductUi>) -> Unit,
-        onProductsInDetailSuccess: (List<ProductInDetailUi>) -> Unit,
         productsInCache: () -> List<ProductUi>
     ) {
         refreshState.observe(viewLifecycleOwner, observer)
         observeWorkInfo(
             viewLifecycleOwner,
-            onProductsSuccess,
-            onProductsInDetailSuccess,
             productsInCache
         )
     }
 
     private fun observeWorkInfo(
         viewLifecycleOwner: LifecycleOwner,
-        onProductsSuccess: (List<ProductUi>) -> Unit,
-        onProductsInDetailSuccess: (List<ProductInDetailUi>) -> Unit,
         productsInCache: () -> List<ProductUi>
     ) {
         workManager.getWorkInfosForUniqueWorkLiveData(WORK_NAME)
@@ -111,26 +118,15 @@ class ProductsManagerImpl @Inject constructor(
 
                 workInfo?.run {
                     if (state == WorkInfo.State.SUCCEEDED) {
-                        handleWorkSuccess(
-                            this,
-                            onProductsSuccess,
-                            onProductsInDetailSuccess
-                        )
+                        handleWorkSuccess(this)
                     } else if (state == WorkInfo.State.FAILED) {
-                        handleWorkFailure(
-                            onProductsSuccess,
-                            productsInCache
-                        )
+                        handleWorkFailure(productsInCache)
                     }
                 }
             }
     }
 
-    private fun handleWorkSuccess(
-        workInfo: WorkInfo,
-        onProductsSuccess: (List<ProductUi>) -> Unit,
-        onProductsInDetailSuccess: (List<ProductInDetailUi>) -> Unit
-    ) {
+    private fun handleWorkSuccess(workInfo: WorkInfo) {
         val products = getOutputData(workInfo, ProductsWorker.PRODUCTS_KEY, productsTypeToken)
         val productsInDetail = getOutputData(
             workInfo,
@@ -138,8 +134,8 @@ class ProductsManagerImpl @Inject constructor(
             productsInDetailTypeToken
         )
 
-        onProductsSuccess(products)
-        onProductsInDetailSuccess(productsInDetail)
+        _products.onNext(products)
+        _productsInDetail.onNext(productsInDetail)
 
         lastUpdateTimestamp = System.currentTimeMillis()
 
@@ -154,16 +150,13 @@ class ProductsManagerImpl @Inject constructor(
         return gson.fromJson(json, dataType)
     }
 
-    private fun handleWorkFailure(
-        onProductsSuccess: (List<ProductUi>) -> Unit,
-        productsInCache: () -> List<ProductUi>
-    ) {
+    private fun handleWorkFailure(productsInCache: () -> List<ProductUi>) {
         val products = productsInCache()
 
         refreshState.value = if (products.isEmpty()) {
             Result.failure(Throwable())
         } else {
-            onProductsSuccess(products)
+            _products.onNext(products)
             Result.success(Unit)
         }
     }

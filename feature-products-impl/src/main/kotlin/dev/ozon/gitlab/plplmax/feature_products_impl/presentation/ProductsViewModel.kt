@@ -5,6 +5,7 @@ import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetail
 import dev.ozon.gitlab.plplmax.feature_products_api.domain.ProductsInteractor
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 import dev.ozon.gitlab.plplmax.work_manager_api.ProductsManager
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class ProductsViewModel(
     private val productsInteractor: ProductsInteractor,
@@ -15,8 +16,21 @@ class ProductsViewModel(
     private val _productLD = MutableLiveData<List<ProductUi>>()
     val productLD: LiveData<List<ProductUi>> = _productLD
 
+    private val compositeDisposable = CompositeDisposable()
+
     init {
         refreshAllProducts()
+
+        val productsDisposable = productsManager.productsObservable()
+            .subscribe {
+                productsInteractor.saveProducts(it)
+                _productLD.value = productsInteractor.getProducts()
+            }
+
+        val productsInDetailDisposable = productsManager.productsInDetailObservable()
+            .subscribe(productInDetailInteractor::saveProductsInDetail)
+
+        compositeDisposable.addAll(productsDisposable, productsInDetailDisposable)
     }
 
     fun refreshAllProducts() {
@@ -38,17 +52,15 @@ class ProductsViewModel(
         productsManager.observeState(
             viewLifecycleOwner,
             observer = productsRefreshState,
-            onProductsSuccess = { productsList ->
-                productsInteractor.saveProducts(productsList)
-
-                _productLD.value = productsInteractor.getProducts()
-            },
-            onProductsInDetailSuccess = { productsInDetailList ->
-                productInDetailInteractor.saveProductsInDetail(productsInDetailList)
-            },
             productsInCache = { productsInteractor.getProducts() }
         )
     }
 
     fun saveProducts() = productsInteractor.saveProducts(productLD.value!!)
+
+    override fun onCleared() {
+        super.onCleared()
+
+        compositeDisposable.dispose()
+    }
 }
