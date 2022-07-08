@@ -6,10 +6,8 @@ import dagger.Module
 import dagger.Provides
 import dev.ozon.gitlab.plplmax.core_network_api.ProductsApi
 import dev.ozon.gitlab.plplmax.core_network_api.ProductsLocalDataSource
-import dev.ozon.gitlab.plplmax.core_network_api.ProductsRemoteDataSource
 import dev.ozon.gitlab.plplmax.core_network_api.SharedPrefsProvider
 import dev.ozon.gitlab.plplmax.core_network_impl.ProductsLocalDataSourceImpl
-import dev.ozon.gitlab.plplmax.core_network_impl.ProductsRemoteDataSourceImpl
 import dev.ozon.gitlab.plplmax.core_network_impl.SharedPrefsProviderImpl
 import dev.ozon.gitlab.plplmax.core_utils.AppScope
 import retrofit2.Retrofit
@@ -34,12 +32,6 @@ interface NetworkModule {
                 .create(ProductsApi::class.java)
         }
     }
-
-    @Binds
-    @AppScope
-    fun provideProductsRemoteDataSource(
-        source: ProductsRemoteDataSourceImpl
-    ): ProductsRemoteDataSource
 
     @Binds
     @AppScope
