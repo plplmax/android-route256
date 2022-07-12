@@ -54,8 +54,8 @@ class ProductsManagerImpl @Inject constructor(
     }
 
     private fun runWorkers() {
-        val productsRequest = OneTimeWorkRequest.from(ProductsWorker::class.java)
-        val productsInDetailRequest = OneTimeWorkRequest.from(ProductsInDetailWorker::class.java)
+        val productsRequest = formRequest<ProductsWorker>()
+        val productsInDetailRequest = formRequest<ProductsInDetailWorker>()
 
         beginWork(productsRequest, productsInDetailRequest)
     }
@@ -70,9 +70,11 @@ class ProductsManagerImpl @Inject constructor(
     }
 
     private inline fun <reified T : ListenableWorker> formRequest(
-        constraints: Constraints,
+        constraints: Constraints? = null,
         initialDelayInMillis: Long = 0
-    ): OneTimeWorkRequest = OneTimeWorkRequestBuilder<T>().setConstraints(constraints)
+    ): OneTimeWorkRequest = OneTimeWorkRequestBuilder<T>().apply {
+        constraints?.let { setConstraints(it) }
+    }
         .setInitialDelay(initialDelayInMillis, TimeUnit.MILLISECONDS)
         .build()
 
