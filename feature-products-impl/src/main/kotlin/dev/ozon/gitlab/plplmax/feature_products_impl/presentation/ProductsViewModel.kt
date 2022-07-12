@@ -45,13 +45,21 @@ class ProductsViewModel(
         productsManager.stopAllRefreshes()
     }
 
-    fun observeWorkInfo(
+    fun observeRefreshState(
         viewLifecycleOwner: LifecycleOwner,
         productsRefreshState: Observer<Result<Unit>>
-    ) {
-        productsManager.observeState(
+    ): Unit = with(productsManager) {
+        observeState(
             viewLifecycleOwner,
             observer = productsRefreshState,
+        )
+
+        observeState(viewLifecycleOwner) { refreshResult ->
+            if (refreshResult.isSuccess) refreshAllProductsWithDelay()
+        }
+
+        observeWorkInfo(
+            viewLifecycleOwner,
             productsInCache = { productsInteractor.getProducts() }
         )
     }

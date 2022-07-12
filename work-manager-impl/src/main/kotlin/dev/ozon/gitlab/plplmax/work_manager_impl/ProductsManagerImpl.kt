@@ -98,17 +98,10 @@ class ProductsManagerImpl @Inject constructor(
 
     override fun observeState(
         viewLifecycleOwner: LifecycleOwner,
-        observer: Observer<Result<Unit>>,
-        productsInCache: () -> List<ProductUi>
-    ) {
-        refreshState.observe(viewLifecycleOwner, observer)
-        observeWorkInfo(
-            viewLifecycleOwner,
-            productsInCache
-        )
-    }
+        observer: Observer<Result<Unit>>
+    ): Unit = refreshState.observe(viewLifecycleOwner, observer)
 
-    private fun observeWorkInfo(
+    override fun observeWorkInfo(
         viewLifecycleOwner: LifecycleOwner,
         productsInCache: () -> List<ProductUi>
     ) {

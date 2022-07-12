@@ -57,9 +57,8 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
 
             vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)
 
-            vm.observeWorkInfo(viewLifecycleOwner) { refreshResult ->
-                if (refreshResult.isSuccess) vm.refreshAllProductsWithDelay()
-                else showError()
+            vm.observeRefreshState(viewLifecycleOwner) { refreshResult ->
+                if (refreshResult.isFailure) showError()
             }
         }
     }

@@ -19,7 +19,11 @@ interface ProductsManager {
 
     fun observeState(
         viewLifecycleOwner: LifecycleOwner,
-        observer: Observer<Result<Unit>>,
+        observer: Observer<Result<Unit>>
+    )
+
+    fun observeWorkInfo(
+        viewLifecycleOwner: LifecycleOwner,
         productsInCache: () -> List<ProductUi>
     )
 }
