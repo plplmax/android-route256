@@ -36,4 +36,5 @@ dependencies {
     implementation project(':feature-product-detail-api')
 
     implementation liveData
+    implementation workManager.rxjava
 }

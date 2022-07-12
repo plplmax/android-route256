@@ -56,11 +56,25 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
             }
 
             vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)
-        }
 
-        vm.observeWorkInfo(viewLifecycleOwner) { refreshResult ->
-            if (refreshResult.isFailure) showError()
+            vm.observeRefreshState(viewLifecycleOwner) { refreshResult ->
+                if (refreshResult.isFailure) showError()
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (vm.productLD.value != null) {
+            vm.refreshAllProductsWithDelay()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        vm.stopAllRefreshes()
     }
 
     private fun showError() {

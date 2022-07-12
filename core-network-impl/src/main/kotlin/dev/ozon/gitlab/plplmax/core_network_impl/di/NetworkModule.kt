@@ -13,6 +13,7 @@ import dev.ozon.gitlab.plplmax.core_network_impl.ProductsRemoteDataSourceImpl
 import dev.ozon.gitlab.plplmax.core_network_impl.SharedPrefsProviderImpl
 import dev.ozon.gitlab.plplmax.core_utils.AppScope
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
@@ -27,6 +28,7 @@ interface NetworkModule {
         fun provideRetrofit(gson: Gson): ProductsApi {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ProductsApi::class.java)

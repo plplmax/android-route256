@@ -48,5 +48,5 @@ dependencies {
     implementation dagger.core
     kapt dagger.compiler
     implementation retrofit.gson
-    implementation workManager
+    implementation workManager.values()
 }

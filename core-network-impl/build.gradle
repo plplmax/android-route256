@@ -40,5 +40,5 @@ dependencies {
     implementation dagger.core
     kapt dagger.compiler
     implementation retrofit.values()
-    implementation workManager
+    implementation workManager.values()
 }
