@@ -19,12 +19,16 @@ class ProductsLocalDataSourceImpl @Inject constructor(
             ?: emptyList()
     }
 
-    override fun getProductById(guid: String): ProductInDetailData? {
+    override fun getProductsInDetail(): List<ProductInDetailData> {
         return sharedPrefsProvider.getObject(
             FILENAME_PRODUCTS_IN_DETAIL,
             PRODUCT_IN_DETAIL_LIST_KEY,
             productsInDetailTypeToken
-        )?.find { it.guid == guid }
+        ) ?: emptyList()
+    }
+
+    override fun getProductById(guid: String): ProductInDetailData? {
+        return getProductsInDetail().find { it.guid == guid }
     }
 
     override fun saveProducts(products: List<ProductData>) {
@@ -43,6 +47,22 @@ class ProductsLocalDataSourceImpl @Inject constructor(
             products,
             productsInDetailTypeToken
         )
+    }
+
+    override fun putInCart(guid: String) {
+        changeInCartState(guid, isInCart = true)
+    }
+
+    override fun removeFromCart(guid: String) {
+        changeInCartState(guid, isInCart = false)
+    }
+
+    private fun changeInCartState(guid: String, isInCart: Boolean) {
+        val products = getProductsInDetail()
+        val product = products.find { it.guid == guid } ?: return
+
+        product.isInCart = isInCart
+        saveProductsInDetail(products)
     }
 
     private companion object {

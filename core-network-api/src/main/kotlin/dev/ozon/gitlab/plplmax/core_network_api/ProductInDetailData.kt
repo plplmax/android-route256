@@ -7,7 +7,7 @@ data class ProductInDetailData(
     val description: String,
     val rating: Double,
     val isFavorite: Boolean,
-    val isInCart: Boolean,
+    var isInCart: Boolean,
     val images: List<String>,
     val weight: Double?,
     val count: Int?,
