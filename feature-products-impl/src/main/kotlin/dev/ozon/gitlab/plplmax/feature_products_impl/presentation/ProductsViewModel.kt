@@ -29,7 +29,6 @@ class ProductsViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        refreshAllProducts()
 
         val productsDisposable = productsManager.productsObservable()
             .subscribe {
@@ -41,6 +40,8 @@ class ProductsViewModel(
             .subscribe(productInDetailInteractor::saveProductsInDetail)
 
         compositeDisposable.addAll(productsDisposable, productsInDetailDisposable)
+
+        refreshAllProducts()
     }
 
     fun refreshAllProducts() {
