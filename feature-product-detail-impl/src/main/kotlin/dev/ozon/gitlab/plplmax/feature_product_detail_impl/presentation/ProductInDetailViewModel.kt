@@ -16,4 +16,16 @@ class ProductInDetailViewModel(
     fun getProductById(guid: String) {
         _product.value = interactor.getProductById(guid)
     }
+
+    fun putInCart() {
+        product.value?.run {
+            interactor.putInCart(guid)
+        }
+    }
+
+    fun removeFromCart() {
+        product.value?.run {
+            interactor.removeFromCart(guid)
+        }
+    }
 }

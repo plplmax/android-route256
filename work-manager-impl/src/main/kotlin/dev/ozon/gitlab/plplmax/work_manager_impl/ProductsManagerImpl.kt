@@ -10,7 +10,7 @@ import dev.ozon.gitlab.plplmax.feature_product_detail_api.presentation.ProductIn
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
 import dev.ozon.gitlab.plplmax.work_manager_api.ProductsManager
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -21,8 +21,8 @@ class ProductsManagerImpl @Inject constructor(
 
     private val refreshState = MutableLiveData<Result<Unit>>()
 
-    private val _products = BehaviorSubject.create<List<ProductUi>>()
-    private val _productsInDetail = BehaviorSubject.create<List<ProductInDetailUi>>()
+    private val _products = PublishSubject.create<List<ProductUi>>()
+    private val _productsInDetail = PublishSubject.create<List<ProductInDetailUi>>()
 
     private val productsTypeToken = object : TypeToken<List<ProductUi>>() {}
     private val productsInDetailTypeToken = object : TypeToken<List<ProductInDetailUi>>() {}

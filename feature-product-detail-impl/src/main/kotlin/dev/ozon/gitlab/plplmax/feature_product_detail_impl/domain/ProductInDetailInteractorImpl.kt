@@ -15,4 +15,12 @@ internal class ProductInDetailInteractorImpl @Inject constructor(
     override fun saveProductsInDetail(products: List<ProductInDetailUi>) {
         repository.saveProductsInDetail(products)
     }
+
+    override fun putInCart(guid: String) {
+        repository.putInCart(guid)
+    }
+
+    override fun removeFromCart(guid: String) {
+        repository.removeFromCart(guid)
+    }
 }

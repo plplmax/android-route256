@@ -5,13 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/productIV"
+    <FrameLayout
+        android:id="@+id/productImageContainer"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:background="@android:color/transparent"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:tabSelectedTextColor="@android:color/transparent"
+            app:tabTextColor="@android:color/transparent" />
+    </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/nameTV"
@@ -24,7 +42,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productIV"
+        app:layout_constraintTop_toBottomOf="@id/productImageContainer"
         tools:text="Яблоки" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -51,5 +69,17 @@
         android:rating="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/priceTV" />
+
+    <dev.ozon.gitlab.plplmax.feature_product_detail_impl.presentation.CustomLoadingButton
+        android:id="@+id/inBucketButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="#FFFFFF"
+        app:customLoadingButton_textBefore="Добавить в корзину"
+        app:customLoadingButton_textAfter="Удалить из корзины"
+        app:layout_constraintTop_toBottomOf="@id/ratingView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

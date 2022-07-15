@@ -18,4 +18,12 @@ internal class ProductInDetailRepositoryImpl @Inject constructor(
     override fun saveProductsInDetail(products: List<ProductInDetailUi>) {
         products.map(mapper::toData).also(localSource::saveProductsInDetail)
     }
+
+    override fun putInCart(guid: String) {
+        localSource.putInCart(guid)
+    }
+
+    override fun removeFromCart(guid: String) {
+        localSource.removeFromCart(guid)
+    }
 }

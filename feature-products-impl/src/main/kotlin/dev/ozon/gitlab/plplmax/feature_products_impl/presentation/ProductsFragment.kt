@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -50,12 +51,24 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         super.onViewCreated(view, savedInstanceState)
 
         with(view.findViewById<RecyclerView>(R.id.products_recycler)) {
-            adapter = ProductsAdapter { guid ->
+            val block: (String) -> Unit = { guid ->
                 vm.saveProducts()
                 navigator.openProductInDetailScreen(findNavController(), guid)
             }
 
-            vm.productLD.observe(viewLifecycleOwner, (adapter as ProductsAdapter)::submitList)
+            val firstAdapter = ProductsAdapter(block)
+            val secondAdapter = ProductsAdapter(block)
+
+            adapter = ConcatAdapter(
+                HeaderAdapter("Продукты меньше 100 рублей"),
+                firstAdapter,
+                HeaderAdapter("Продукты 100 рублей и выше"),
+                secondAdapter
+            )
+
+            vm.productsBelow100Rubles.observe(viewLifecycleOwner, firstAdapter::submitList)
+
+            vm.productsEqOrAbove100Rubles.observe(viewLifecycleOwner, secondAdapter::submitList)
 
             vm.observeRefreshState(viewLifecycleOwner) { refreshResult ->
                 if (refreshResult.isFailure) showError()

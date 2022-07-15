@@ -50,7 +50,7 @@ class ProductsAdapter(
         fun bind(position: Int) {
             val product = products[position]
 
-            productIV.load(product.image)
+            productIV.load(product.image[0])
 
             nameTV.text = product.name
             priceTV.text = product.price
