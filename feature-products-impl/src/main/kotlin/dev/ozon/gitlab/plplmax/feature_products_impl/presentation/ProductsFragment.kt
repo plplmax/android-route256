@@ -1,6 +1,7 @@
 package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import dev.ozon.gitlab.plplmax.core_navigation_api.DependenciesInjector
 import dev.ozon.gitlab.plplmax.core_navigation_api.Navigator
+import dev.ozon.gitlab.plplmax.core_utils.BaseProductsAdapter
 import dev.ozon.gitlab.plplmax.core_utils.viewModelCreator
 import dev.ozon.gitlab.plplmax.feature_product_detail_api.domain.ProductInDetailInteractor
 import dev.ozon.gitlab.plplmax.feature_products_api.domain.ProductsInteractor
@@ -50,14 +52,16 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.e("TEST", "onViewCreated: ")
+
         with(view.findViewById<RecyclerView>(R.id.products_recycler)) {
             val block: (String) -> Unit = { guid ->
-                vm.saveProducts()
-                navigator.openProductInDetailScreen(findNavController(), guid)
+//                vm.saveProducts()
+                navigator.openProductInDetailScreenFromProducts(findNavController(), guid)
             }
 
-            val firstAdapter = ProductsAdapter(block)
-            val secondAdapter = ProductsAdapter(block)
+            val firstAdapter = BaseProductsAdapter(block)
+            val secondAdapter = BaseProductsAdapter(block)
 
             adapter = ConcatAdapter(
                 HeaderAdapter("Продукты меньше 100 рублей"),

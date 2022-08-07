@@ -5,4 +5,5 @@ import androidx.fragment.app.Fragment
 interface DependenciesInjector {
     fun injectProductsFragment(fragment: Fragment)
     fun injectProductInDetailFragment(fragment: Fragment)
+    fun injectProfileFragment(fragment: Fragment)
 }

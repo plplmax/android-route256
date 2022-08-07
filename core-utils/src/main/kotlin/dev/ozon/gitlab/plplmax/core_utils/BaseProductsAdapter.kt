@@ -1,4 +1,4 @@
-package dev.ozon.gitlab.plplmax.feature_products_impl.presentation
+package dev.ozon.gitlab.plplmax.core_utils
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -9,18 +9,18 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import dev.ozon.gitlab.plplmax.core_utils.load
+import dev.ozon.gitlab.plplmax.core_resources.R
 import dev.ozon.gitlab.plplmax.feature_products_api.presentation.ProductUi
-import dev.ozon.gitlab.plplmax.feature_products_impl.R
 
-class ProductsAdapter(
+open class BaseProductsAdapter(
     private val block: (String) -> Unit
-) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
-    private var products: List<ProductUi> = emptyList()
+) : RecyclerView.Adapter<BaseProductsAdapter.ViewHolder>() {
+
+    protected var products: List<ProductUi> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.product_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.main_product_list_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -36,7 +36,7 @@ class ProductsAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    open inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val productViewContainer: MaterialCardView =
             view.findViewById(R.id.productViewContainer)
@@ -47,7 +47,7 @@ class ProductsAdapter(
         private val counterLabel: TextView = view.findViewById(R.id.counterLabel)
         private val counterView: TextView = view.findViewById(R.id.counterView)
 
-        fun bind(position: Int) {
+        open fun bind(position: Int) {
             val product = products[position]
 
             productIV.load(product.image[0])

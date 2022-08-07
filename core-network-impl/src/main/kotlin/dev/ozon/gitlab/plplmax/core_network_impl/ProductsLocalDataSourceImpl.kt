@@ -58,11 +58,17 @@ class ProductsLocalDataSourceImpl @Inject constructor(
     }
 
     private fun changeInCartState(guid: String, isInCart: Boolean) {
-        val products = getProductsInDetail()
+        val products = getProducts()
+        val productsInDetail = getProductsInDetail()
+
         val product = products.find { it.guid == guid } ?: return
+        val productInDetail = productsInDetail.find { it.guid == guid } ?: return
 
         product.isInCart = isInCart
-        saveProductsInDetail(products)
+        productInDetail.isInCart = isInCart
+
+        saveProducts(products)
+        saveProductsInDetail(productsInDetail)
     }
 
     private companion object {

@@ -7,6 +7,6 @@ data class ProductData(
     val price: String,
     val rating: Double,
     val isFavorite: Boolean,
-    val isInCart: Boolean,
+    var isInCart: Boolean,
     val countViews: Int = 0
 )

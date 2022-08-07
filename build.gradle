@@ -3,6 +3,14 @@ plugins {
     id 'com.android.application' version '7.1.3' apply false
     id 'com.android.library' version '7.1.3' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
+    id 'org.cqfn.diktat.diktat-gradle-plugin' version '1.2.1' apply true
+}
+
+diktat {
+//    inputs((clazz) -> clazz.include('feature-products-impl/**/*.kt'))
+    inputs {
+        it.include('feature-product-detail-impl/**/*.kt')
+    }
 }
 
 task clean(type: Delete) {

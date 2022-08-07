@@ -5,6 +5,8 @@ import dev.ozon.gitlab.plplmax.feature_product_detail_impl.di.DaggerFeatureProdu
 import dev.ozon.gitlab.plplmax.feature_product_detail_impl.di.FeatureProductDetailComponent
 import dev.ozon.gitlab.plplmax.feature_products_impl.di.DaggerFeatureProductsComponent
 import dev.ozon.gitlab.plplmax.feature_products_impl.di.FeatureProductsComponent
+import dev.ozon.gitlab.plplmax.feature_profile_impl.di.DaggerFeatureProfileComponent
+import dev.ozon.gitlab.plplmax.feature_profile_impl.di.FeatureProfileComponent
 
 internal object Dependencies {
     private var appComponent: AppComponent? = null
@@ -17,6 +19,12 @@ internal object Dependencies {
 
     internal val featureProductDetailComponent: FeatureProductDetailComponent by lazy {
         DaggerFeatureProductDetailComponent.builder()
+            .appComponentDependencies(appComponent)
+            .build()
+    }
+
+    internal val featureProfileComponent: FeatureProfileComponent by lazy {
+        DaggerFeatureProfileComponent.builder()
             .appComponentDependencies(appComponent)
             .build()
     }

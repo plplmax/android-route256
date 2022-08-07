@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/productsFragment">
+    app:startDestination="@id/navigation_products">
 
     <fragment
-        android:id="@+id/productsFragment"
+        android:id="@+id/navigation_products"
         android:name="dev.ozon.gitlab.plplmax.feature_products_impl.presentation.ProductsFragment"
         android:label="ProductsFragment"
         tools:layout="@layout/fragment_products">
@@ -19,4 +19,13 @@
         android:name="dev.ozon.gitlab.plplmax.feature_product_detail_impl.presentation.ProductInDetailFragment"
         android:label="ProductInDetailFragment"
         tools:layout="@layout/pdp_fragment" />
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="dev.ozon.gitlab.plplmax.feature_profile_impl.presentation.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_productInDetailFragment"
+            app:destination="@id/productInDetailFragment" />
+    </fragment>
 </navigation>

@@ -5,4 +5,6 @@
     <string name="views">Просмотры:</string>
     <string name="something_went_wrong">Что-то произошло не так. Возможно, нет интернета</string>
     <string name="retry">Повторить</string>
+    <string name="products">Продукты</string>
+    <string name="profile">Кабинет</string>
 </resources>
